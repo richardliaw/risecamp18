@@ -1,12 +1,8 @@
 import numpy as np
 import keras
 from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
-from keras_callback import TuneCallback
 
 
 def load_data(limit_threads=None):
@@ -50,11 +46,9 @@ def load_data(limit_threads=None):
 class TuneCallback(keras.callbacks.Callback):
     def __init__(self, reporter, logs={}):
         self.reporter = reporter
-        self.iteration = 0
 
     def on_train_end(self, epoch, logs={}):
-        self.reporter(timesteps_total=batch, done=1, mean_accuracy=logs["acc"])
+        self.reporter(done=1, mean_accuracy=logs["acc"])
 
     def on_batch_end(self, batch, logs={}):
-        self.iteration += 1
-        self.reporter(timesteps_total=self.iteration, mean_accuracy=logs["acc"])
+        self.reporter(mean_accuracy=logs["acc"])
