@@ -3,9 +3,9 @@ import keras
 from keras.datasets import mnist
 from keras.preprocessing.image import ImageDataGenerator
 from keras import backend as K
+import itertools
 
-
-def load_data(limit_threads=None):
+def load_data(limit_threads=4, generator=True, iter_limit=200):
     if limit_threads:
         K.set_session(
             K.tf.Session(
@@ -40,6 +40,9 @@ def load_data(limit_threads=None):
     # convert class vectors to binary class matrices
     y_train = keras.utils.to_categorical(y_train, num_classes)
     y_test = keras.utils.to_categorical(y_test, num_classes)
+    if generator:
+        datagen = ImageDataGenerator()
+        return itertools.islice(datagen.flow(x_train, y_train), iter_limit)
     return x_train, x_test, y_train, y_test
 
 
